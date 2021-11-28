@@ -22,17 +22,15 @@ from tkinter import filedialog
 # bt.pack(side=TOP,fill=BOTH)
 # bt.bind('<Button-1>',xuly)
 # root.mainloop()
-access_key_id = 'ASIA4AO7KQFMFMXY5OVV'
-secret_access_key = '1Oij2mvpYN9D0OwqEIEgEosJGyaCzA/TiV34CIAU'
-session_token = 'FwoGZXIvYXdzEAYaDPMZ1lI2YVu73eaK8iLPAZyrF2o4UaKf9XNpNrl/GdlZwjXJPJegh2zGBISWI6Kq7h/G4UrinbW/CH659jDQ/EGnSi8kh+jBvTUtf2BJzLQ/Ji7aoqE5S8VwWiVmIYgRJYQWOXWA9Sb1e/q6o1pNQNx7keel5KCRYsuQiz6h2aBRoiuRtnlMWJL0+A0I9TZ+Yxb4yDEChxKoH6gD8inaQzUKhQDTvPV9kHy7o2VIN+BbwuSLg5AQLC7+4kTUxWSRuDXdTQ1Pkgaj+cycmGVywlDh6U87eD/Lmm7zfmMBoCjq5I2NBjItAFfOSIiDkfQtRwmWibhmXOgkHq/vDulyCQNaW9qYph8dnctn5lzhDaUtR366'
+access_key_id = 'ASIA4AO7KQFMHAFLYCE6'
+secret_access_key = 'rEPn5orPsQ6dT8nAG2IFt8qnY1XWJ8Rsi1iuktuJ'
+session_token = 'FwoGZXIvYXdzEAgaDJRsSLaSFatnDHIStyLPAQpqMWYEwihfRVjZh4k4h5o0oGagQIQWVusmKr2UTwburaApkFm6YJiVOKFzJY/in6Zf/Cltvl6cZnzF6ueA6O2N0CLcSe3LKjf0teHd/Y1gAxwhoFdlpqiJI2DmywHNIyGTVyBdPrX30/TCox7n5DUgO3JmxN0LdsBU4YH2CJySksel8XqfWoCaTuLfUi25Ji8x/KG8M2acSUqh1JObyCSStL9D9be/gEQw4f8OfXqPEpJZxKodjl+r2FYm37Gj13aLxQmWNJ1VRD9EH0ojmSibo46NBjItr81zWjK9ftymbUSSRNqDiZbquT6qA527HQ4n00mN2Dn488Jt6yE94b804jY5'
 region = 'us-east-1'
 client=boto3.client('rekognition',
                     region_name=region,
                     aws_access_key_id=access_key_id,
                     aws_secret_access_key=secret_access_key,
                     aws_session_token=session_token)
-photo='SonTung.jpg'
-photo2='frame69.jpg'
 s3 = boto3.resource(
     service_name='s3',
     region_name=region,
