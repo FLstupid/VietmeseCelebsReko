@@ -46,7 +46,7 @@ def Chuyendoi(anh):
         return source_bytes
 def Sosanh(source_bytes):
     index = 0
-    while (index<17):
+    while (index<51):
         anh = './celebs' + str(index) + '.jpg'
         with open(anh, 'rb') as source_image:
             source_bytes2 = source_image.read()
@@ -75,6 +75,40 @@ def kiemTraNgheSi(index):
         14: 'Hòa Minzy',
         15: 'Bích Phương',
         16: 'Đen Vâu',
+        17: 'Hương Giang',
+        18: 'Mỹ Tâm',
+        19: 'Minh Hằng',
+        20: 'Hồ Ngọc Hà',
+        21: 'Bảo Anh',
+        22: 'Hồ Quang Hiếu',
+        23: 'Ngọc Trinh',
+        24: 'Diệu Nhi',
+        25: 'Binz',
+        26: 'Khởi My',
+        27: 'Kevil Khánh',
+        28: 'siêu mẫu Thanh Hằng',
+        29: 'Hoài Linh',
+        30: 'Đỗ Thị Hà',
+        31: 'Khánh Vân',
+        32: 'Trần Tiểu Vy',
+        33: 'Đỗ Mỹ Linh',
+        34: "H'hen Nie",
+        35: 'AMEE',
+        36: 'Noo Phước Thịnh',
+        37: 'Ninh Dương Lan Ngọc',
+        38: 'Lý Hải',
+        39: 'Mạc Văn Khoa',
+        40: 'Đàm Vĩnh Hưng',
+        41: 'Thủy Tiên',
+        42: 'Lương Xuân Trường',
+        43: 'Quế Ngọc Hải',
+        44: 'Trần Đình Trọng',
+        45: 'thủ môn Bùi Tiến Dũng',
+        46: 'Phan Văn Đức',
+        47: 'Duy Mạnh',
+        48: 'Đoàn Văn Hậu',
+        49: 'Hồ Chí Minh',
+        50: 'Võ Nguyên Giáp',
     }
     return switcher.get(index,"Không nhận dạng được")
 win = Tk()
