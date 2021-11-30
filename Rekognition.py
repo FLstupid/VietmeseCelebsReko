@@ -1,12 +1,10 @@
 import boto3
-import os
-import mediapipe as mp
-import time
 from tkinter import *
-from tkinter import ttk
-from PIL import Image
-from PIL import ImageTk
+from PIL import Image,ImageTk, ImageDraw
 import cv2
+import numpy as np
+import matplotlib.patches as mpatches
+import matplotlib.pyplot as plt
 from tkinter import filedialog
 
 
@@ -22,9 +20,9 @@ from tkinter import filedialog
 # bt.pack(side=TOP,fill=BOTH)
 # bt.bind('<Button-1>',xuly)
 # root.mainloop()
-access_key_id = 'ASIA4AO7KQFMHAFLYCE6'
-secret_access_key = 'rEPn5orPsQ6dT8nAG2IFt8qnY1XWJ8Rsi1iuktuJ'
-session_token = 'FwoGZXIvYXdzEAgaDJRsSLaSFatnDHIStyLPAQpqMWYEwihfRVjZh4k4h5o0oGagQIQWVusmKr2UTwburaApkFm6YJiVOKFzJY/in6Zf/Cltvl6cZnzF6ueA6O2N0CLcSe3LKjf0teHd/Y1gAxwhoFdlpqiJI2DmywHNIyGTVyBdPrX30/TCox7n5DUgO3JmxN0LdsBU4YH2CJySksel8XqfWoCaTuLfUi25Ji8x/KG8M2acSUqh1JObyCSStL9D9be/gEQw4f8OfXqPEpJZxKodjl+r2FYm37Gj13aLxQmWNJ1VRD9EH0ojmSibo46NBjItr81zWjK9ftymbUSSRNqDiZbquT6qA527HQ4n00mN2Dn488Jt6yE94b804jY5'
+access_key_id = 'ASIA4AO7KQFMOKIV6LFU'
+secret_access_key = 'h+uJShh5pHfW/XbsivEY5CiuLhj2/PHQ+z+EiFqK'
+session_token = 'FwoGZXIvYXdzEDgaDEXG+mXsb/dkz6UN4SLPAXHOV3fEwgbFjFXyQsNujyWW8qtV4IUoj5e/YuhmB5AndpZxmFoMcXDDxymaWivLHaSR39SoaMMKqoj/uSS0oToEC8ReDp7sJ4DVVSTaFitUAXCnQOyhEIuewyp8jR8nFQNeyHd3r0Jgu+n6T9IhbW8o+12AjrzKKngklMj6YZFQzopF9fLHZpEnfAkmdT2i57EPcPj1Yu3qHMVjT/5f7prJpcUB+u8H9/cWVbPz9f5fwZIP6lai1Gzb+ht+Ip4E5HghgjmLutYPm75pZJz7/yjR+piNBjItzGrB/jVmHwovEd9cXn2o6PnyxmOtZCrEDEuRbQhc92P+Fjm5p3Qv26xyCdLj'
 region = 'us-east-1'
 client=boto3.client('rekognition',
                     region_name=region,
@@ -44,18 +42,44 @@ def Chuyendoi(anh):
     with open(anh, 'rb') as source_image:
         source_bytes = source_image.read()
         return source_bytes
+def Checkmang(arr,index):
+    for i in range(0, len(arr)):
+        if arr[i] == index:
+            return True
+    return False
+def Kiemtrasoluong(source_bytes):
+    response = client.detect_labels(Image={'Bytes': source_bytes})
+    i = 0
+    while i < len(response['Labels']):
+        if response['Labels'][i]['Name'] == 'Person':
+            return len(response['Labels'][i]['Instances'])
+            break
+        i += 1
 def Sosanh(source_bytes):
+    gioihan=Kiemtrasoluong(source_bytes)
     index = 0
-    while (index<51):
-        anh = './celebs' + str(index) + '.jpg'
-        with open(anh, 'rb') as source_image:
-            source_bytes2 = source_image.read()
-        response = client.compare_faces(SourceImage={'Bytes': source_bytes}, TargetImage={'Bytes': source_bytes2})
-        if(response['FaceMatches']!=[]):
-            if(response['FaceMatches'][0]['Similarity']>70):
-                return index
-        index += 1
-    return -1
+    dem=0
+    cohieu=False
+    ketqua=[]
+    while dem<gioihan:
+        while (index<51):
+            anh = './celebs' + str(index) + '.jpg'
+            with open(anh, 'rb') as source_image:
+                source_bytes2 = source_image.read()
+            response = client.compare_faces(SourceImage={'Bytes': source_bytes2}, TargetImage={'Bytes': source_bytes})
+            if(response['FaceMatches']!=[]):
+                if(response['FaceMatches'][0]['Similarity']>70):
+                    if Checkmang(ketqua,index)==False:
+                        ketqua.append(index)
+                        cohieu=True
+                        index=0
+                        break;
+            index += 1
+        dem+=1
+        if cohieu==False:
+            ketqua.append(-1)
+        cohieu=False
+    return ketqua
 def kiemTraNgheSi(index):
     switcher={
         0: 'Châu Bùi',
@@ -115,24 +139,23 @@ win = Tk()
 win.geometry("600x600+200+30")
 win.resizable(False, False)
 win.configure(bg ='white')
-w = 400
-h = 300
+r = 400
+d = 300
 
 color = "#00406e"
-frame_1 = Frame(win,width = 600,height =330,bg = color).place(x=0,y=0)
+frame_1 = Frame(win,width = 600,height =320,bg = color).place(x=0,y=0)
 frame_2 = Frame(win,width = 600,height =320,bg = color).place(x=0,y=350)
 
-v = Label(frame_1, width=w, height=h)
+v = Label(frame_1, width=r, height=d)
 v.place(x=10, y=10)
 cap = cv2.VideoCapture("C:\\Users\\Admin\\PycharmProjects\\pythonProject\\QC.mp4")
 
-labl = Label(win, text="", width=25, height=2).place(x=350, y=400)
 frm = Label(frame_2,bg="black", width=43, height=13, borderwidth=1).place(x=10, y=370)
 def take_copy(im):
-    la = Label(frame_2, width=w-100, height=h-100)
+    la = Label(frame_2, width=r-100, height=d-100)
     la.place(x=10, y=370)
     copy = im.copy()
-    copy = cv2.resize(copy, (w-100, h-100))
+    copy = cv2.resize(copy, (r-100, d-100))
     rgb = cv2.cvtColor(copy, cv2.COLOR_BGR2RGB)
     image = Image.fromarray(copy)
     imgtk = ImageTk.PhotoImage(image)
@@ -141,24 +164,30 @@ def take_copy(im):
     name = './data/frame' + str(currentframe) + '.jpg'
     cv2.imwrite(name, rgb)
     vitri = Sosanh(Chuyendoi(name))
-    ketqua=kiemTraNgheSi(vitri)
-    print(ketqua)
-    save = Label(win, text=ketqua, width=25, height=2).place(x=350, y=400)
+    for i in range(0, len(vitri)):
+        ketqua=kiemTraNgheSi(vitri[i])
+        save = Label(win, text=ketqua)
+        save.place(x=350, y=400+i*25)
+    # ketqua=kiemTraNgheSi(vitri)
+    # print(ketqua)
+    # save = Label(win,text = ketqua)
+    # save.place(x=450,y=500)
+
 
 def select_img():
     global rgb
     _, img = cap.read()
-    img = cv2.resize(img, (w, h))
+    img = cv2.resize(img, (r, d))
     rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     image = Image.fromarray(rgb)
     imgtk = ImageTk.PhotoImage(image)
     v.configure(image=imgtk)
     v.image = imgtk
-    v.after(30, select_img)
+    v.after(5, select_img)
 
 
 select_img()
-snap = Button(win, text="capture", command=lambda:[take_copy(rgb)])
+snap = Button(win, text="capture", command=lambda: take_copy(rgb))
 snap.place(x=450, y=150, width=60, height=50)
 
 win.mainloop()
