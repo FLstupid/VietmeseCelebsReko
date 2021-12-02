@@ -1,10 +1,11 @@
 import boto3
-from tkinter import *
-from PIL import Image,ImageTk, ImageDraw
 import cv2
-import numpy as np
-import matplotlib.patches as mpatches
-import matplotlib.pyplot as plt
+import os
+import mediapipe as mp
+import time
+from tkinter import *
+from PIL import Image,ImageTk
+import cv2
 from tkinter import filedialog
 
 
@@ -20,15 +21,17 @@ from tkinter import filedialog
 # bt.pack(side=TOP,fill=BOTH)
 # bt.bind('<Button-1>',xuly)
 # root.mainloop()
-access_key_id = 'ASIA4AO7KQFMOKIV6LFU'
-secret_access_key = 'h+uJShh5pHfW/XbsivEY5CiuLhj2/PHQ+z+EiFqK'
-session_token = 'FwoGZXIvYXdzEDgaDEXG+mXsb/dkz6UN4SLPAXHOV3fEwgbFjFXyQsNujyWW8qtV4IUoj5e/YuhmB5AndpZxmFoMcXDDxymaWivLHaSR39SoaMMKqoj/uSS0oToEC8ReDp7sJ4DVVSTaFitUAXCnQOyhEIuewyp8jR8nFQNeyHd3r0Jgu+n6T9IhbW8o+12AjrzKKngklMj6YZFQzopF9fLHZpEnfAkmdT2i57EPcPj1Yu3qHMVjT/5f7prJpcUB+u8H9/cWVbPz9f5fwZIP6lai1Gzb+ht+Ip4E5HghgjmLutYPm75pZJz7/yjR+piNBjItzGrB/jVmHwovEd9cXn2o6PnyxmOtZCrEDEuRbQhc92P+Fjm5p3Qv26xyCdLj'
+access_key_id = 'ASIA4AO7KQFMGOC3W5NX'
+secret_access_key = 'g5GtNsADwRJDvnASF4LIFvyJjxkaZRA296cb0hps'
+session_token = 'FwoGZXIvYXdzEDQaDCvwNPpKlnmNsEoa0CLPAWlIOttoAD4ftBuOejKPmRppXlKOT6EcxafNIIQLtT1ozQvQcofVPDVS63lOQd8xATkSs9i2ytLC+fhV9gSlMsrOAUW4DlkjiRcFEjKL+vjAIXXXYXvs2Mo1NQGxaLuKyvgGc/sLWpDqS6EomoMSigjKtx5udnnaosB1SQB75vOQbrW1+7uoYMD6ICIWGICScKbn/1puI9NqRYZ8FVYNKfN4VFKdi3fBIdrgE5NsrG+RkTzrTaTWOp15RJZio5ookxTbAxAVIECgYdpj8rMtHSic/ZeNBjItBnpG1Eh7NxuvEnpjftBixjZlJhSXbyagJh2l4DTI0st6h7r8gnwwp8cavC/S'
 region = 'us-east-1'
 client=boto3.client('rekognition',
                     region_name=region,
                     aws_access_key_id=access_key_id,
                     aws_secret_access_key=secret_access_key,
                     aws_session_token=session_token)
+photo='SonTung.jpg'
+photo2='frame69.jpg'
 s3 = boto3.resource(
     service_name='s3',
     region_name=region,
@@ -62,13 +65,15 @@ def Sosanh(source_bytes):
     cohieu=False
     ketqua=[]
     while dem<gioihan:
-        while (index<51):
-            anh = './celebs' + str(index) + '.jpg'
+        while (index<8):
+            anh = './checkImage/anh' + str(index) + '.jpg'
             with open(anh, 'rb') as source_image:
                 source_bytes2 = source_image.read()
             response = client.compare_faces(SourceImage={'Bytes': source_bytes2}, TargetImage={'Bytes': source_bytes})
+            print(response)
+            print('-------------')
             if(response['FaceMatches']!=[]):
-                if(response['FaceMatches'][0]['Similarity']>70):
+                if(response['FaceMatches'][0]['Similarity']>50):
                     if Checkmang(ketqua,index)==False:
                         ketqua.append(index)
                         cohieu=True
@@ -85,77 +90,34 @@ def kiemTraNgheSi(index):
         0: 'Châu Bùi',
         1: 'Sơn Tùng M-TP',
         2: 'Elon Musk',
-        3: 'Chi Pu',
+        3: 'Quang Lê',
         4: 'Đông Nhi',
         5: 'Ông Cao Thắng',
-        6: 'Karik',
-        7: 'Mai Phương Thúy',
-        8: 'Trường Giang',
-        9: 'Nhã Phương',
-        10: 'Trấn Thành',
-        11: 'Hari Won',
-        12: 'Erik',
-        13: 'Đức Phúc',
-        14: 'Hòa Minzy',
-        15: 'Bích Phương',
-        16: 'Đen Vâu',
-        17: 'Hương Giang',
-        18: 'Mỹ Tâm',
-        19: 'Minh Hằng',
-        20: 'Hồ Ngọc Hà',
-        21: 'Bảo Anh',
-        22: 'Hồ Quang Hiếu',
-        23: 'Ngọc Trinh',
-        24: 'Diệu Nhi',
-        25: 'Binz',
-        26: 'Khởi My',
-        27: 'Kevil Khánh',
-        28: 'siêu mẫu Thanh Hằng',
-        29: 'Hoài Linh',
-        30: 'Đỗ Thị Hà',
-        31: 'Khánh Vân',
-        32: 'Trần Tiểu Vy',
-        33: 'Đỗ Mỹ Linh',
-        34: "H'hen Nie",
-        35: 'AMEE',
-        36: 'Noo Phước Thịnh',
-        37: 'Ninh Dương Lan Ngọc',
-        38: 'Lý Hải',
-        39: 'Mạc Văn Khoa',
-        40: 'Đàm Vĩnh Hưng',
-        41: 'Thủy Tiên',
-        42: 'Lương Xuân Trường',
-        43: 'Quế Ngọc Hải',
-        44: 'Trần Đình Trọng',
-        45: 'thủ môn Bùi Tiến Dũng',
-        46: 'Phan Văn Đức',
-        47: 'Duy Mạnh',
-        48: 'Đoàn Văn Hậu',
-        49: 'Hồ Chí Minh',
-        50: 'Võ Nguyên Giáp',
+	    6: 'Erik',
+        7: 'Bích Phương',
     }
     return switcher.get(index,"Không nhận dạng được")
 win = Tk()
 win.geometry("600x600+200+30")
 win.resizable(False, False)
-win.configure(bg ='white')
-r = 400
-d = 300
+win.configure(bg ='#1b407a')
+w = 400
+h = 300
 
-color = "#00406e"
+color = "#581845"
 frame_1 = Frame(win,width = 600,height =320,bg = color).place(x=0,y=0)
 frame_2 = Frame(win,width = 600,height =320,bg = color).place(x=0,y=350)
 
-v = Label(frame_1, width=r, height=d)
+v = Label(frame_1, width=w, height=h)
 v.place(x=10, y=10)
-cap = cv2.VideoCapture("C:\\Users\\Admin\\PycharmProjects\\pythonProject\\QC.mp4")
+cap = cv2.VideoCapture("C:\\Users\\DELL\\Videos\\Ca si\\Test5.mp4")
 
-frm = Label(frame_2,bg="black", width=43, height=13, borderwidth=1).place(x=10, y=370)
+
 def take_copy(im):
-    la = Label(frame_2, width=r-100, height=d-100)
+    la = Label(frame_2, width=w-100, height=h-100)
     la.place(x=10, y=370)
     copy = im.copy()
-    copy = cv2.resize(copy, (r-100, d-100))
+    copy = cv2.resize(copy, (w-100, h-100))
     rgb = cv2.cvtColor(copy, cv2.COLOR_BGR2RGB)
     image = Image.fromarray(copy)
     imgtk = ImageTk.PhotoImage(image)
@@ -167,7 +129,7 @@ def take_copy(im):
     for i in range(0, len(vitri)):
         ketqua=kiemTraNgheSi(vitri[i])
         save = Label(win, text=ketqua)
-        save.place(x=350, y=400+i*25)
+        save.place(x=450, y=500+i*25)
     # ketqua=kiemTraNgheSi(vitri)
     # print(ketqua)
     # save = Label(win,text = ketqua)
@@ -177,7 +139,7 @@ def take_copy(im):
 def select_img():
     global rgb
     _, img = cap.read()
-    img = cv2.resize(img, (r, d))
+    img = cv2.resize(img, (w, h))
     rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     image = Image.fromarray(rgb)
     imgtk = ImageTk.PhotoImage(image)
