@@ -110,7 +110,7 @@ frame_2 = Frame(win,width = 600,height =320,bg = color).place(x=0,y=350)
 
 v = Label(frame_1, width=w, height=h)
 v.place(x=10, y=10)
-cap = cv2.VideoCapture("C:\\Users\\DELL\\Videos\\Ca si\\Test5.mp4")
+cap = cv2.VideoCapture("QC1.mp4")
 
 
 def take_copy(im):
@@ -139,13 +139,14 @@ def take_copy(im):
 def select_img():
     global rgb
     _, img = cap.read()
-    img = cv2.resize(img, (w, h))
-    rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-    image = Image.fromarray(rgb)
-    imgtk = ImageTk.PhotoImage(image)
-    v.configure(image=imgtk)
-    v.image = imgtk
-    v.after(5, select_img)
+    if img is not None :
+        img = cv2.resize(img, (w, h))
+        rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        image = Image.fromarray(rgb)
+        imgtk = ImageTk.PhotoImage(image)
+        v.configure(image=imgtk)
+        v.image = imgtk
+        v.after(5, select_img)
 
 
 select_img()
